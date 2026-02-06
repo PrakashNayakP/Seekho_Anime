@@ -1,12 +1,12 @@
 SeekhoAnime — README
 
 Project overview
-\
-This is a simple Android app that shows top and popular anime retrieved from the Jikan API (\https://api.jikan.moe).
+
+This is a simple Android app that shows top and popular anime retrieved from the Jikan API (https://api.jikan.moe).
 The UI is built with Jetpack Compose. Data is cached locally so previously viewed content is available offline.
 
 Features implemented
-\
+
 - Home: View a scrollable list of top anime.
   - Each item shows: title, poster image, episode count (when available).
   - Tap an item to open the details page.
@@ -26,7 +26,7 @@ Features implemented
   - Loading indicators appear while fetching data.
 
 Corner cases (what you, as an end\-user, can expect)
-\
+
 - First run with no internet:
   - The app cannot fetch the anime list on first run without internet; the list will be empty and an error message is shown. Connect to the internet and retry.
 
@@ -44,7 +44,7 @@ Corner cases (what you, as an end\-user, can expect)
   - If the Jikan API rate limits requests or returns an error, the app will surface a network error and keep showing cached data (if any).
 
 Assumptions made (feature level)
-\
+
 - You have an internet connection for the app to fetch the initial list and to refresh trailers and images.
 - The initial fetch populates the local cache; after that core browsing works offline.
 - Trailers are expected to be YouTube links for in\-app playback. Non\-YouTube trailers will fall back to showing images.
@@ -52,6 +52,6 @@ Assumptions made (feature level)
 - Occasional API downtime or rate limiting may temporarily reduce functionality (list not updating, trailers failing).
 
 Quick end\-user tips
-\
+
 - If the list is empty: check network or restart the app.
 - If a trailer won't play: wait and try again later (API or network issues may be temporary).
