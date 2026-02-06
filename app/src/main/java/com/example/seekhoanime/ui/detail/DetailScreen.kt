@@ -7,6 +7,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -41,55 +42,59 @@ fun DetailScreen(viewModel: DetailViewModel, onBack: () -> Unit) {
         if (loading) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }
+                anime?.let { a ->
+                    Column(modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp,)) {
+                        Text(
+                            text = "← Back", modifier = Modifier
+                                .clickable { onBack() }
+                                .padding(4.dp), style = MaterialTheme.typography.bodyMedium)
 
-        anime?.let { a ->
-            Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-                Text(text = "← Back", modifier = Modifier
-                    .clickable { onBack() }
-                    .padding(4.dp), style = MaterialTheme.typography.bodyMedium)
+                        Spacer(modifier = Modifier.height(8.dp))
 
-                Spacer(modifier = Modifier.height(8.dp))
+                        val embedUrl = a.trailerYoutubeId
+                        val youtubeId = embedUrl?.let { extractYoutubeId(it) }
 
-                val embedUrl = a.trailerYoutubeId
-                val youtubeId = embedUrl?.let { extractYoutubeId(it) }
+                        if (!youtubeId.isNullOrEmpty()) {
 
-                if (!youtubeId.isNullOrEmpty()) {
+                            YoutubeTrailerPlayer(
+                                youtubeId = youtubeId,
+                                posterUrl = a.imageUrl,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(220.dp)
+                            )
 
-                    YoutubeTrailerPlayer(
-                        youtubeId = youtubeId,
-                        posterUrl = a.imageUrl,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(220.dp)
-                    )
+                        } else {
 
-                } else {
+                            val painter = rememberAsyncImagePainter(a.imageUrl)
 
-                    val painter = rememberAsyncImagePainter(a.imageUrl)
+                            Image(
+                                painter = painter,
+                                contentDescription = a.title,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(220.dp),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
 
-                    Image(
-                        painter = painter,
-                        contentDescription = a.title,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(220.dp),
-                        contentScale = ContentScale.Crop
-                    )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(text = a.title, style = MaterialTheme.typography.titleLarge)
+                        Spacer(modifier = Modifier.height(4.dp))
+                        LazyColumn {
+                            item {
+                                Text(text = "Episodes: ${a.episodes ?: "?"}")
+                                Text(text = "Rating: ${a.score ?: "?"}")
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(text = a.synopsis ?: "No synopsis available.")
+
+                                Spacer(modifier = Modifier.height(8.dp))
+                                a.genresCsv?.let { Text(text = "Genres: $it") }
+                                a.castCsv?.let { Text(text = "Cast: $it") }
+                            }
+                        }
+                    }
                 }
-
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(text = a.title, style = MaterialTheme.typography.titleLarge)
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(text = "Episodes: ${a.episodes ?: "?"}")
-                Text(text = "Rating: ${a.score ?: "?"}")
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(text = a.synopsis ?: "No synopsis available.")
-
-                Spacer(modifier = Modifier.height(8.dp))
-                a.genresCsv?.let { Text(text = "Genres: $it") }
-                a.castCsv?.let { Text(text = "Cast: $it") }
-            }
-        }
 
         error?.let { err ->
             Toast.makeText(LocalContext.current, err, Toast.LENGTH_SHORT).show()

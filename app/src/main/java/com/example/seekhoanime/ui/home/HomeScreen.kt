@@ -44,7 +44,7 @@ fun HomeScreen(viewModel: HomeViewModel, onAnimeClick: (Int) -> Unit) {
         }
 
         LazyColumn(modifier = Modifier.fillMaxSize().padding(8.dp)) {
-            items(animeList) { anime ->
+            items(items =animeList, key = {it.malId}) { anime ->
                 AnimeRow(anime = anime, onClick = { onAnimeClick(anime.malId) })
             }
 
